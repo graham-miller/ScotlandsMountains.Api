@@ -1,25 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
-    <IsPackable>false</IsPackable>
-
     <AssemblyName>ScotlandsMountains.Api.Loader</AssemblyName>
-
     <RootNamespace>ScotlandsMountains.Api.Loader</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="26.1.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\Resources\Resources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

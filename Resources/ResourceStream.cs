@@ -2,14 +2,14 @@
 
 namespace ScotlandsMountains.Api.Resources
 {
-    public class File : Stream
+    public class ResourceStream : Stream
     {
         private readonly Stream _stream;
 
-        public File(string name)
+        public ResourceStream(string name)
         {
-            var assembly = typeof(File).Assembly;
-            var path = $"{typeof(File).Namespace}.Files.{name}";
+            var assembly = typeof(ResourceStream).Assembly;
+            var path = $"{typeof(ResourceStream).Namespace}.Files.{name}";
             _stream = assembly.GetManifestResourceStream(path);
         }
 
