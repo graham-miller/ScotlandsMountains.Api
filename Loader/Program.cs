@@ -19,12 +19,10 @@ namespace ScotlandsMountains.Api.Loader
 
             while (csv.Read())
             {
-                var raw = new Dictionary<string, string>(
-                    ((IDictionary<string, object>)csv.GetRecord<dynamic>())
-                    .Select(y => new KeyValuePair<string, string>(y.Key, y.Value.ToString())));
+                var record = ReadRecordFrom(csv);
 
-                if (IncludedCountries.Contains(raw["Country"]))
-                    collector.CollectFrom(new CollectorContext(raw));
+                if (IsScottish(record))
+                    collector.CollectFrom(new CollectorContext(record));
             }
 
             var mountains = collector.Of<Mountain>().Items;
@@ -38,6 +36,18 @@ namespace ScotlandsMountains.Api.Loader
             //var container = new MountainContainer();
             //await container.Create();
             //await container.Load(mountains.Take(100));
+        }
+
+        private static Dictionary<string, string> ReadRecordFrom(HillCsvReader csv)
+        {
+            return new Dictionary<string, string>(
+                ((IDictionary<string, object>)csv.GetRecord<dynamic>())
+                .Select(y => new KeyValuePair<string, string>(y.Key, y.Value.ToString())));
+        }
+
+        private static bool IsScottish(Dictionary<string, string> record)
+        {
+            return IncludedCountries.Contains(record["Country"]);
         }
     }
 }
