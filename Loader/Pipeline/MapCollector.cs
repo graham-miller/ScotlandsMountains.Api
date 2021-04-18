@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
 {
     public class MapCollector : ICollector<Map>
     {
-        private readonly IDictionary<string, Map> _items = new Dictionary<string, Map>();
-
         public void CollectFrom(CollectorContext context)
         {
             CollectMapsFrom(context, "Map 1:50k", 1d/50000);
@@ -34,6 +33,8 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             }
         }
 
-        public IEnumerable<Map> Items => _items.Select(x => x.Value);
+        public IList<Map> Items => _items.Select(x => x.Value).ToList();
+
+        private readonly IDictionary<string, Map> _items = new Dictionary<string, Map>();
     }
 }

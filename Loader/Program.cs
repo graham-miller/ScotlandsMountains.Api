@@ -12,18 +12,7 @@ namespace ScotlandsMountains.Api.Loader
         static void Main(string[] args)
         {
             var collector = new CollectorPipeline();
-
-            using var csv = new HillCsvReader();
-            csv.Read();
-            csv.ReadHeader();
-
-            while (csv.Read())
-            {
-                var record = ReadRecordFrom(csv);
-
-                if (IsScottish(record))
-                    collector.CollectFrom(new CollectorContext(record));
-            }
+            ReadHillCsv(collector);
 
             var mountains = collector.Of<Mountain>().Items;
             var regions = collector.Of<Region>().Items;
@@ -31,21 +20,43 @@ namespace ScotlandsMountains.Api.Loader
             var classifications = collector.Of<Classification>().Items;
             var maps = collector.Of<Map>().Items;
 
-            var mountain = mountains.Single(x => x.Name.Contains("Foinaven"));
-
             //var container = new MountainContainer();
             //await container.Create();
             //await container.Load(mountains.Take(100));
         }
 
-        private static Dictionary<string, string> ReadRecordFrom(HillCsvReader csv)
+        private static void ReadHillCsv(CollectorPipeline collector)
         {
-            return new Dictionary<string, string>(
-                ((IDictionary<string, object>)csv.GetRecord<dynamic>())
-                .Select(y => new KeyValuePair<string, string>(y.Key, y.Value.ToString())));
+            using var csv = new HillCsvReader();
+            csv.Read();
+            csv.ReadHeader();
+
+            csv.GetRecords<dynamic>()
+                .Select(RecordAsDictionary)
+                .OrderByDescending(Height)
+                .ToList()
+                .ForEach(x =>
+                {
+                    if (IsScottish(x))
+                        collector.CollectFrom(new CollectorContext(x));
+                });
         }
 
-        private static bool IsScottish(Dictionary<string, string> record)
+        private static IDictionary<string, string> RecordAsDictionary(dynamic record)
+        {
+            var keyValuePairs =
+                ((IDictionary<string, object>) record).Select(y =>
+                    new KeyValuePair<string, string>(y.Key, y.Value.ToString()));
+
+            return new Dictionary<string, string>(keyValuePairs);
+        }
+
+        private static double Height(IDictionary<string, string> x)
+        {
+            return double.Parse(x["Metres"]);
+        }
+
+        private static bool IsScottish(IDictionary<string, string> record)
         {
             return IncludedCountries.Contains(record["Country"]);
         }

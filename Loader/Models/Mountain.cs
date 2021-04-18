@@ -23,9 +23,11 @@ namespace ScotlandsMountains.Api.Loader.Models
         public string Features { get; set; }
         
         public string Observations { get; set; }
-        
+
+        public MountainSummary Parent { get; set; }
+
         public RegionSummary Region { get; set; }
-        
+
         public CountySummary County { get; set; }
 
         public IList<ClassificationSummary> Classifications { get; set; } = new List<ClassificationSummary>();

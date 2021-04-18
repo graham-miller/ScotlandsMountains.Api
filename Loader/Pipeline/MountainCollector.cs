@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
 {
     public class MountainCollector : ICollector<Mountain>
     {
-        private readonly IList<Mountain> _items = new List<Mountain>();
-
         public void CollectFrom(CollectorContext context)
         {
             context.Mountain.Id = Guid.NewGuid().ToString("D");
@@ -36,13 +36,15 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             };
             context.Mountain.Features = context.Raw["Feature"];
             context.Mountain.Observations = context.Raw["Observations"];
+                
+            SetParent(context);
 
-            _items.Add(context.Mountain);
+            _mountainsByDobihId.Add(context.Mountain.DobihId, context.Mountain);
         }
 
-        public IEnumerable<Mountain> Items => _items;
-        
-        private Tuple<string,List<string>> GetNameAndAliases(string raw)
+        public IList<Mountain> Items => _mountainsByDobihId.Select(x => x.Value).ToList();
+
+        private static Tuple<string,List<string>> GetNameAndAliases(string raw)
         {
             var name = string.Empty;
             var alias = string.Empty;
@@ -85,5 +87,24 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
 
             return new Tuple<string, List<string>>(name.Trim(), aliases);
         }
+
+        private void SetParent(CollectorContext context)
+        {
+            var parentSmcId = context.Raw["Parent (SMC)"];
+            var parentMaId = context.Raw["Parent (Ma)"];
+            var parentId = int.Parse(string.IsNullOrWhiteSpace(parentSmcId) ? parentMaId : parentSmcId);
+
+            var hasNoParent = parentId == 0;
+            if (hasNoParent) return;
+
+            var hasSelfAsParent = parentId != context.Mountain.DobihId;
+            if (hasSelfAsParent) return;
+
+            if (!_mountainsByDobihId.ContainsKey(parentId)) return;
+
+            context.Mountain.Parent = new MountainSummary(_mountainsByDobihId[parentId]);
+        }
+
+        private readonly Dictionary<int, Mountain> _mountainsByDobihId = new Dictionary<int, Mountain>();
     }
 }

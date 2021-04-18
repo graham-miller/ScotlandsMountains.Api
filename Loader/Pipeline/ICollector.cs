@@ -9,6 +9,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
 
     public interface ICollector<T> : ICollector
     {
-        IEnumerable<T> Items { get; }
+        IList<T> Items { get; }
     }
 }

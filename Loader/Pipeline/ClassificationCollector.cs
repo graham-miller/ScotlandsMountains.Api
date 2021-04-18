@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
 {
     public class ClassificationCollector : ICollector<Classification>
     {
-        private readonly IDictionary<string, Classification> _items = new Dictionary<string, Classification>();
-
         public void CollectFrom(CollectorContext context)
         {
             var keys = context.Raw
@@ -34,7 +33,9 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             }
         }
 
-        public IEnumerable<Classification> Items => _items.Select(x => x.Value);
+        public IList<Classification> Items => _items.Select(x => x.Value).ToList();
+
+        private readonly IDictionary<string, Classification> _items = new Dictionary<string, Classification>();
 
         private readonly IDictionary<string, string> _nameLookup = new Dictionary<string, string>
         {

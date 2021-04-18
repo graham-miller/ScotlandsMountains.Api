@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
 {
     public class RegionCollector : ICollector<Region>
     {
-        private readonly IDictionary<string, Region> _items = new Dictionary<string, Region>();
-
         public void CollectFrom(CollectorContext context)
         {
             var key = context.Raw["Region"];
@@ -30,6 +29,8 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             context.Mountain.Region = new RegionSummary(region);
         }
 
-        public IEnumerable<Region> Items => _items.Select(x => x.Value);
+        public IList<Region> Items => _items.Select(x => x.Value).ToList();
+
+        private readonly IDictionary<string, Region> _items = new Dictionary<string, Region>();
     }
 }
