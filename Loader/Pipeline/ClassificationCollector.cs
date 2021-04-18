@@ -29,6 +29,7 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                     _items.Add(key, classification);
                 }
 
+                classification.Mountains.Add(new MountainSummary(context.Mountain));
                 context.Mountain.Classifications.Add(new ClassificationSummary(classification));
             }
         }

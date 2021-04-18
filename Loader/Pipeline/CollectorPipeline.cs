@@ -10,7 +10,8 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             new MountainCollector(),
             new RegionCollector(),
             new CountyCollector(),
-            new ClassificationCollector()
+            new ClassificationCollector(),
+            new MapCollector()
         };
 
         public void CollectFrom(CollectorContext context)

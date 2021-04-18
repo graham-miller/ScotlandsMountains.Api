@@ -11,7 +11,11 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
         public void CollectFrom(CollectorContext context)
         {
             context.Mountain.Id = Guid.NewGuid().ToString("D");
-            context.Mountain.Name = context.Raw["Name"];
+
+            var nameAndAliases = GetNameAndAliases(context.Raw["Name"]);
+            context.Mountain.Name = nameAndAliases.Item1;
+            context.Mountain.Aliases = nameAndAliases.Item2;
+
             context.Mountain.Location = new Location
             {
                 Type = "Point",
@@ -37,5 +41,49 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
         }
 
         public IEnumerable<Mountain> Items => _items;
+        
+        private Tuple<string,List<string>> GetNameAndAliases(string raw)
+        {
+            var name = string.Empty;
+            var alias = string.Empty;
+            var aliases = new List<string>();
+            var inAlias = false;
+
+            foreach (var c in raw)
+            {
+                if (inAlias)
+                {
+                    if (c == ']')
+                    {
+                        aliases.Add(alias.Trim());
+                        inAlias = false;
+                    }
+                    else
+                    {
+                        alias += c;
+                    }
+
+                }
+                else
+                {
+                    if (c == '[')
+                    {
+                        inAlias = true;
+                        alias = string.Empty;
+                    }
+                    else
+                    {
+                        name += c;
+                    }
+                }
+            }
+
+            while (name.Contains("  "))
+            {
+                name = name.Replace("  ", " ");
+            }
+
+            return new Tuple<string, List<string>>(name.Trim(), aliases);
+        }
     }
 }

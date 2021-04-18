@@ -1,9 +1,14 @@
-﻿namespace ScotlandsMountains.Api.Loader.Models
+﻿using System.Collections.Generic;
+
+namespace ScotlandsMountains.Api.Loader.Models
 {
     public class Classification
     {
         public string Id { get; set; }
+
         public string Name { get; set; }
+
+        public IList<MountainSummary> Mountains { get; set; } = new List<MountainSummary>();
     }
 
     public class ClassificationSummary

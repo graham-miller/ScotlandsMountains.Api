@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ScotlandsMountains.Api.Loader.Models;
 using ScotlandsMountains.Api.Loader.Pipeline;
@@ -32,6 +31,9 @@ namespace ScotlandsMountains.Api.Loader
             var regions = collector.Of<Region>().Items;
             var counties = collector.Of<County>().Items;
             var classifications = collector.Of<Classification>().Items;
+            var maps = collector.Of<Map>().Items;
+
+            var mountain = mountains.Single(x => x.Name.Contains("Foinaven"));
 
             //var container = new MountainContainer();
             //await container.Create();
