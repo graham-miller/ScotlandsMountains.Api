@@ -42,10 +42,13 @@ namespace ScotlandsMountains.Api.Loader.Models
         {
             Name = mountain.Name;
             Location = mountain.Location;
+            Height = mountain.Height;
         }
 
         public string Name { get; set; }
 
         public Location Location { get; set; }
+
+        public Height Height { get; set; }
     }
 }
