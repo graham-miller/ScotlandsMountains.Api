@@ -37,6 +37,8 @@ namespace ScotlandsMountains.Api.Loader.Models
 
     public class MountainSummary
     {
+        public MountainSummary() { }
+
         public MountainSummary(Mountain mountain)
         {
             Id = mountain.Id;

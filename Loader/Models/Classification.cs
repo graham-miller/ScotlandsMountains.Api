@@ -13,6 +13,8 @@ namespace ScotlandsMountains.Api.Loader.Models
 
     public class ClassificationSummary
     {
+        public ClassificationSummary() { }
+
         public ClassificationSummary(Classification classification)
         {
             Id = classification.Id;

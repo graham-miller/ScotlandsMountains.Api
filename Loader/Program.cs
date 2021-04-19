@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using ScotlandsMountains.Api.Loader.CosmosDb;
 using ScotlandsMountains.Api.Loader.Models;
 using ScotlandsMountains.Api.Loader.Pipeline;
 
@@ -9,8 +13,11 @@ namespace ScotlandsMountains.Api.Loader
     {
         private static readonly string[] IncludedCountries = {"S", "ES"}; 
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             var collector = new CollectorPipeline();
             ReadHillCsv(collector);
 
@@ -20,9 +27,13 @@ namespace ScotlandsMountains.Api.Loader
             var classifications = collector.Of<Classification>().Items;
             var maps = collector.Of<Map>().Items;
 
-            //var container = new MountainContainer();
-            //await container.Create();
-            //await container.Load(mountains.Take(100));
+            var container = new MountainContainer();
+            await container.Create();
+            await container.Load(mountains.Take(100));
+
+            stopwatch.Stop();
+
+            Console.WriteLine($"Time taken: {(stopwatch.ElapsedMilliseconds/1000):0s}");
         }
 
         private static void ReadHillCsv(CollectorPipeline collector)

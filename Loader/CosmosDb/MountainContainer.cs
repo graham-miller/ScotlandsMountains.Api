@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
+using ScotlandsMountains.Api.Loader.Models;
 
-namespace ScotlandsMountains.Api.Data
+namespace ScotlandsMountains.Api.Loader.CosmosDb
 {
     public class MountainContainer
     {
@@ -43,7 +44,7 @@ namespace ScotlandsMountains.Api.Data
             _container = _database.GetContainer(Id);
         }
 
-        public async Task Load(IEnumerable<dynamic> mountains)
+        public async Task Load(IEnumerable<Mountain> mountains)
         {
             var cost = 0d;
             var inserted = 0;
@@ -72,12 +73,12 @@ namespace ScotlandsMountains.Api.Data
                 }
             }
 
-            Console.WriteLine($"{inserted} records inserted ({errors} errors) at a cost of {cost:#.00} RUs");
+            Console.WriteLine($"{inserted:#,##0} records inserted ({errors:#,##0} errors) at a cost of {cost:#.00} RUs");
         }
 
-        private async Task<ItemResponse<dynamic>> Insert(dynamic mountain)
+        private async Task<ItemResponse<Mountain>> Insert(Mountain mountain)
         {
-            return await _container.CreateItemAsync(mountain);
+            return await _container.CreateItemAsync(mountain, new PartitionKey(mountain.Id));
         }
     }
 }

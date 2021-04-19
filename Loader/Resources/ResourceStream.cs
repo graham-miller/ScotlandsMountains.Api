@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ScotlandsMountains.Api.Resources
+namespace ScotlandsMountains.Api.Loader.Resources
 {
     public class ResourceStream : Stream
     {

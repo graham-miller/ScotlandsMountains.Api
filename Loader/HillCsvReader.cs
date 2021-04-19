@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
-using ScotlandsMountains.Api.Resources;
+using ScotlandsMountains.Api.Loader.Resources;
 
 namespace ScotlandsMountains.Api.Loader
 {

@@ -8,6 +8,8 @@
 
     public class CountySummary
     {
+        public CountySummary() { }
+
         public CountySummary(County county)
         {
             Id = county.Id;

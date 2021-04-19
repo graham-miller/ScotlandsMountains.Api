@@ -13,6 +13,8 @@ namespace ScotlandsMountains.Api.Loader.Models
 
     public class RegionSummary
     {
+        public RegionSummary() { }
+
         public RegionSummary(Region region)
         {
             Id = region.Id;

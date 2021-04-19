@@ -9,6 +9,8 @@
 
     public class MapSummary
     {
+        public MapSummary() { }
+
         public MapSummary(Map map)
         {
             Id = map.Id;

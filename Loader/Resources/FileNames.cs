@@ -1,4 +1,4 @@
-﻿namespace ScotlandsMountains.Api.Resources
+﻿namespace ScotlandsMountains.Api.Loader.Resources
 {
     public static class FileNames
     {

@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 
-namespace ScotlandsMountains.Api.Data
+namespace ScotlandsMountains.Api.Loader.CosmosDb
 {
     public static class Shared
     {

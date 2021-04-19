@@ -97,7 +97,7 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             var hasNoParent = parentId == 0;
             if (hasNoParent) return;
 
-            var hasSelfAsParent = parentId != context.Mountain.DobihId;
+            var hasSelfAsParent = parentId == context.Mountain.DobihId;
             if (hasSelfAsParent) return;
 
             if (!_mountainsByDobihId.ContainsKey(parentId)) return;
