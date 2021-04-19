@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ScotlandsMountains.Api.Loader.Models
+﻿namespace ScotlandsMountains.Api.Loader.Models
 {
     public class Region
     {

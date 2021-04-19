@@ -3,7 +3,9 @@
     public class Map
     {
         public string Id { get; set; }
+
         public string Code { get; set; }
+        
         public double Scale { get; set; }
     }
 
@@ -19,7 +21,9 @@
         }
 
         public string Id { get; set; }
+        
         public string Code { get; set; }
+        
         public double Scale { get; set; }
     }
 }

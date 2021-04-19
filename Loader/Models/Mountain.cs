@@ -16,7 +16,7 @@ namespace ScotlandsMountains.Api.Loader.Models
         
         public string GridRef { get; set; }
         
-        public double Height { get; set; }
+        public Height Height { get; set; }
         
         public Prominence Prominence { get; set; }
         

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
@@ -15,7 +14,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             var nameAndAliases = GetNameAndAliases(context.Raw["Name"]);
             context.Mountain.Name = nameAndAliases.Item1;
             context.Mountain.Aliases = nameAndAliases.Item2;
-
             context.Mountain.Location = new Location
             {
                 Type = "Point",
@@ -26,17 +24,23 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                 }
             };
             context.Mountain.GridRef = context.Raw["Grid ref"];
-            context.Mountain.Height = double.Parse(context.Raw["Metres"]);
-            context.Mountain.DobihId = int.Parse(context.Raw["Number"]);
+            context.Mountain.Height = new Height
+            {
+                Metres = double.Parse(context.Raw["Metres"])
+            };
             context.Mountain.Prominence = new Prominence
             {
-                Value = double.Parse(context.Raw["Drop"]),
+                Metres = double.Parse(context.Raw["Drop"]),
                 MeasuredFrom = context.Raw["Col grid ref"],
-                MeasureFromHeight = double.Parse(context.Raw["Col height"])
+                MeasureFromHeight = new Height
+                {
+                    Metres = double.Parse(context.Raw["Col height"])
+                }
             };
             context.Mountain.Features = context.Raw["Feature"];
             context.Mountain.Observations = context.Raw["Observations"];
-                
+            context.Mountain.DobihId = int.Parse(context.Raw["Number"]);
+
             SetParent(context);
 
             _mountainsByDobihId.Add(context.Mountain.DobihId, context.Mountain);
