@@ -1,24 +1,20 @@
 ﻿namespace ScotlandsMountains.Api.Loader.Models
 {
-    public class County
+    public class County : Entity
     {
-        public string Id { get; set; }
+        public County() : base(PartitionKeyFrom.Type) { }
 
         public string Name { get; set; }
     }
 
-    public class CountySummary
+    public class CountySummary : Summary
     {
-        public CountySummary() { }
-
         public CountySummary(County county)
+            : base(county)
         {
-            Id = county.Id;
             Name = county.Name;
         }
 
-        public string Id { get; set; }
-        
         public string Name { get; set; }
     }
 }

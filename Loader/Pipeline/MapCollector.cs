@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
@@ -22,7 +21,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                 {
                     map = new Map
                     {
-                        Id = Guid.NewGuid().ToString("D"),
                         Code = key,
                         Scale = scale
                     };

@@ -9,8 +9,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
     {
         public void CollectFrom(CollectorContext context)
         {
-            context.Mountain.Id = Guid.NewGuid().ToString("D");
-
             var nameAndAliases = GetNameAndAliases(context.Raw["Name"]);
             context.Mountain.Name = nameAndAliases.Item1;
             context.Mountain.Aliases = nameAndAliases.Item2;

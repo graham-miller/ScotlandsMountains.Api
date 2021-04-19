@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
@@ -19,7 +18,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                 var name = split[1].Trim();
                 region = new Region
                 {
-                    Id = Guid.NewGuid().ToString("D"),
                     Code = code,
                     Name = name
                 };

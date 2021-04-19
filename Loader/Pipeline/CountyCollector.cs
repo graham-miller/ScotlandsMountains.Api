@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.Models;
 
 namespace ScotlandsMountains.Api.Loader.Pipeline
@@ -16,7 +14,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             {
                 county = new County
                 {
-                    Id = Guid.NewGuid().ToString("D"),
                     Name = context.Raw["County"]
                 };
                 _items.Add(key, county);

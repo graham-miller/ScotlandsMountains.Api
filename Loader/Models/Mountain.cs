@@ -2,10 +2,10 @@
 
 namespace ScotlandsMountains.Api.Loader.Models
 {
-    public class Mountain
+    public class Mountain : Entity
     {
-        public string Id { get; set; }
-        
+        public Mountain() : base(PartitionKeyFrom.Id) { }
+
         public string Name { get; set; }
 
         public List<string> Aliases { get; set; }
@@ -35,18 +35,14 @@ namespace ScotlandsMountains.Api.Loader.Models
         public IList<MapSummary> Maps { get; set; } = new List<MapSummary>();
     }
 
-    public class MountainSummary
+    public class MountainSummary : Summary
     {
-        public MountainSummary() { }
-
         public MountainSummary(Mountain mountain)
+            : base(mountain)
         {
-            Id = mountain.Id;
             Name = mountain.Name;
             Location = mountain.Location;
         }
-
-        public string Id { get; set; }
 
         public string Name { get; set; }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ScotlandsMountains.Api.Loader.CosmosDb;
 using ScotlandsMountains.Api.Loader.Models;
 using ScotlandsMountains.Api.Loader.Pipeline;
+using ScotlandsMountains.Api.Loader.Resources;
 
 namespace ScotlandsMountains.Api.Loader
 {
@@ -20,14 +21,21 @@ namespace ScotlandsMountains.Api.Loader
             ReadHillCsv(collector);
 
             var mountains = collector.Of<Mountain>().Items;
-            var regions = collector.Of<Region>().Items;
-            var counties = collector.Of<County>().Items;
             var classifications = collector.Of<Classification>().Items;
             var maps = collector.Of<Map>().Items;
+            var regions = collector.Of<Region>().Items;
+            var counties = collector.Of<County>().Items;
 
-            var container = new MountainContainer();
-            await container.Create();
-            await container.Load(mountains.Take(100));
+            var mountainContainer = new MountainContainer();
+            await mountainContainer.Create();
+            await mountainContainer.Save(mountains.Take(100));
+
+            var aspectsContainer = new GenericContainer("mountainAspects");
+            await aspectsContainer.Create();
+            await aspectsContainer.Save(classifications);
+            await aspectsContainer.Save(maps);
+            await aspectsContainer.Save(regions);
+            await aspectsContainer.Save(counties);
 
             stopwatch.Stop();
 

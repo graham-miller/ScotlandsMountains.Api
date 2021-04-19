@@ -2,26 +2,23 @@
 
 namespace ScotlandsMountains.Api.Loader.Models
 {
-    public class Classification
+    public class Classification : Entity
     {
-        public string Id { get; set; }
+        public Classification() : base(PartitionKeyFrom.Type) { }
 
         public string Name { get; set; }
 
         public IList<MountainSummary> Mountains { get; set; } = new List<MountainSummary>();
     }
 
-    public class ClassificationSummary
+    public class ClassificationSummary : Summary
     {
-        public ClassificationSummary() { }
-
         public ClassificationSummary(Classification classification)
+            : base(classification)
         {
-            Id = classification.Id;
             Name = classification.Name;
         }
 
-        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

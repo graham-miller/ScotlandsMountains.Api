@@ -1,26 +1,22 @@
 ﻿namespace ScotlandsMountains.Api.Loader.Models
 {
-    public class Region
+    public class Region : Entity
     {
-        public string Id { get; set; }
+        public Region() : base(PartitionKeyFrom.Type) { }
 
         public string Code { get; set; }
 
         public string Name { get; set; }
     }
 
-    public class RegionSummary
+    public class RegionSummary : Summary
     {
-        public RegionSummary() { }
-
         public RegionSummary(Region region)
+            : base(region)
         {
-            Id = region.Id;
             Code = region.Code;
             Name = region.Name;
         }
-
-        public string Id { get; set; }
 
         public string Code { get; set; }
 

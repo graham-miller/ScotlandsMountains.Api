@@ -22,7 +22,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                 {
                     classification = new Classification
                     {
-                        Id = Guid.NewGuid().ToString("D"),
                         Name = _nameLookup[key]
                     };
                     _items.Add(key, classification);
