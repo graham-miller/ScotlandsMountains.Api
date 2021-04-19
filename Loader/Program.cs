@@ -11,8 +11,6 @@ namespace ScotlandsMountains.Api.Loader
 {
     class Program
     {
-        private static readonly string[] IncludedCountries = {"S", "ES"}; 
-
         static async Task Main(string[] args)
         {
             var stopwatch = new Stopwatch();
@@ -71,5 +69,7 @@ namespace ScotlandsMountains.Api.Loader
         {
             return IncludedCountries.Contains(record["Country"]);
         }
+
+        private static readonly string[] IncludedCountries = {"S", "ES"};
     }
 }
