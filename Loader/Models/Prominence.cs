@@ -6,6 +6,6 @@
         
         public string MeasuredFrom { get; set; }
         
-        public Height MeasureFromHeight { get; set; }
+        public Height MeasuredFromHeight { get; set; }
     }
 }

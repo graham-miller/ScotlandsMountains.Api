@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ScotlandsMountains.Api.Loader.CosmosDb;
 using ScotlandsMountains.Api.Loader.Models;
 using ScotlandsMountains.Api.Loader.Pipeline;
@@ -28,7 +30,7 @@ namespace ScotlandsMountains.Api.Loader
 
             var mountainContainer = new MountainContainer();
             await mountainContainer.Create();
-            await mountainContainer.Save(mountains.Take(100));
+            await mountainContainer.Save(mountains);
 
             var aspectsContainer = new GenericContainer("mountainAspects");
             await aspectsContainer.Create();
@@ -38,8 +40,19 @@ namespace ScotlandsMountains.Api.Loader
             await aspectsContainer.Save(counties);
 
             stopwatch.Stop();
+            var seconds = stopwatch.ElapsedMilliseconds/1000;
+            Console.WriteLine($"Time taken: {seconds:#,##0s}");
 
-            Console.WriteLine($"Time taken: {(stopwatch.ElapsedMilliseconds/1000):0s}");
+            await File.WriteAllTextAsync(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "scotlands-mountains-data.json"),
+                JsonConvert.SerializeObject(new
+                {
+                    mountains,
+                    classifications,
+                    maps,
+                    regions,
+                    counties
+                }));
         }
 
         private static void ReadHillCsv(CollectorPipeline collector)

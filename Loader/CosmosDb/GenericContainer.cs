@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
@@ -42,6 +43,8 @@ namespace ScotlandsMountains.Api.Loader.CosmosDb
             var cost = 0d;
             var inserted = 0;
             var errors = 0;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             foreach (var item in items)
             {
@@ -66,7 +69,9 @@ namespace ScotlandsMountains.Api.Loader.CosmosDb
                 }
             }
 
-            Console.WriteLine($"Inserted {inserted:#,##0} {typeof(T).Name} records ({errors:#,##0} errors) at a cost of {cost:#.00} RUs");
+            stopwatch.Stop();
+            var seconds = stopwatch.ElapsedMilliseconds / 1000;
+            Console.WriteLine($"Inserted {inserted:#,##0} {typeof(T).Name} records ({errors:#,##0} errors) in {seconds:#,##0}s at a cost of {cost:#,##0.00} RUs");
         }
 
         protected virtual ContainerProperties GetContainerProperties()

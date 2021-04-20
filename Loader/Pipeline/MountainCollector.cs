@@ -30,7 +30,7 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
             {
                 Metres = double.Parse(context.Raw["Drop"]),
                 MeasuredFrom = context.Raw["Col grid ref"],
-                MeasureFromHeight = new Height
+                MeasuredFromHeight = new Height
                 {
                     Metres = double.Parse(context.Raw["Col height"])
                 }
