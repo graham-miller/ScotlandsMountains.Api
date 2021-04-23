@@ -12,18 +12,13 @@ namespace ScotlandsMountains.Api.Functions
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddSingleton<CosmosClient>((s) =>
+            builder.Services.AddSingleton(s =>
             {
-                var connectionString = System.Environment.GetEnvironmentVariable("CosmosDbConnectionString");
-                //var clientOptions = new CosmosClientOptions
-                //{
-                //    SerializerOptions = new CosmosSerializationOptions
-                //    {
-                //        PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                //    }
-                //};
-                return new CosmosClient(connectionString);//, clientOptions);
+                var connectionString = Environment.GetEnvironmentVariable("CosmosDbConnectionString");
+                return new CosmosClient(connectionString);
             });
+
+            builder.Services.AddScoped<MountainsRepository, MountainsRepository>();
         }
     }
 }
