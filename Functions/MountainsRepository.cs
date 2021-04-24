@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ScotlandsMountains.Api.Functions
 {
@@ -19,7 +21,7 @@ namespace ScotlandsMountains.Api.Functions
             _client = client;
         }
 
-        public async Task<IActionResult> GetClassifications()
+        public async Task<JArray> GetClassifications()
         {
             const string query = @"
                 SELECT
@@ -33,7 +35,7 @@ namespace ScotlandsMountains.Api.Functions
             return await QueryMountainAspects(query);
         }
 
-        public async Task<IActionResult> GetClassification(string id)
+        public async Task<JToken> GetClassification(string id)
         {
             var query = $@"
                 SELECT
@@ -46,10 +48,12 @@ namespace ScotlandsMountains.Api.Functions
                 AND c.id = '{id}'
                 ORDER BY c.displayOrder ASC";
 
-            return await QueryMountainAspects(query);
+            var result = await QueryMountainAspects(query);
+
+            return result.Any() ? result.First() : null;
         }
 
-        public async Task<IActionResult> Search(string term)
+        public async Task<JArray> Search(string term)
         {
             var query = $@"
                 SELECT
@@ -66,7 +70,7 @@ namespace ScotlandsMountains.Api.Functions
             return await QueryMountains(query);
         }
 
-        public async Task<IActionResult> GetMountain(string id)
+        public async Task<JToken> GetMountain(string id)
         {
             var query = $@"
                 SELECT
@@ -89,20 +93,22 @@ namespace ScotlandsMountains.Api.Functions
                 WHERE c.partitionKey = '{id}'
                 AND c.id = '{id}'";
 
-            return await QueryMountains(query);
+            var result = await QueryMountains(query);
+
+            return result.Any() ? result.First() : null;
         }
 
-        private async Task<IActionResult> QueryMountainAspects(string query)
+        private async Task<JArray> QueryMountainAspects(string query)
         {
             return await QueryCosmosDb(query, AspectsContainerId);
         }
 
-        private async Task<IActionResult> QueryMountains(string query)
+        private async Task<JArray> QueryMountains(string query)
         {
             return await QueryCosmosDb(query, MountainsContainerId);
         }
 
-        private async Task<IActionResult> QueryCosmosDb(string query, string containerId)
+        private async Task<JArray> QueryCosmosDb(string query, string containerId)
         {
             var container = _client.GetDatabase(DatabaseId).GetContainer(containerId);
             var iterator = container.GetItemQueryStreamIterator(query);
@@ -120,8 +126,11 @@ namespace ScotlandsMountains.Api.Functions
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 using (var streamReader = new StreamReader(memoryStream))
                 {
-                    var result = JsonConvert.DeserializeObject<dynamic>(await streamReader.ReadToEndAsync());
-                    return new JsonResult(result.Documents);
+                    var json = await streamReader.ReadToEndAsync();
+                    var x = JsonConvert.DeserializeObject<JObject>(json) as IEnumerable<KeyValuePair<string, JToken>>;
+                    var y = (JArray) x.First(j => j.Key == "Documents").Value;
+
+                    return y;
                 }
             }
         }

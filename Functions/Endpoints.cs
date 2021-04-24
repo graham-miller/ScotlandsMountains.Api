@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace ScotlandsMountains.Api.Functions
 {
@@ -17,13 +18,30 @@ namespace ScotlandsMountains.Api.Functions
             _mountainsRepository = mountainsRepository;
         }
 
+        // http://localhost:7071/api/initial
+        [FunctionName("GetInitialData")]
+        public async Task<IActionResult> GetInitialData(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "initial")] HttpRequest request,
+            ILogger logger)
+        {
+            var classifications = await _mountainsRepository.GetClassifications();
+            var id = classifications.First()["id"].ToString();
+            var mountains = await _mountainsRepository.GetClassification(id);
+            var result = new JObject(
+                new JProperty("classifications", classifications),
+                new JProperty("mountains", mountains));
+            
+            return new OkObjectResult(result);
+        }
+
         // http://localhost:7071/api/classifications
         [FunctionName("GetClassifications")]
         public async Task<IActionResult> GetClassifications(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "classifications")] HttpRequest request,
             ILogger logger)
         {
-            return await _mountainsRepository.GetClassifications();
+            var result = await _mountainsRepository.GetClassifications();
+            return new OkObjectResult(result);
         }
 
         // http://localhost:7071/api/classifications/6a69287b-471a-4e72-92b3-55bfb599c3db
@@ -33,7 +51,11 @@ namespace ScotlandsMountains.Api.Functions
             string id,
             ILogger logger)
         {
-            return await _mountainsRepository.GetClassification(id);
+            var result = await _mountainsRepository.GetClassification(id);
+
+            if (result == null) return new NotFoundResult();
+
+            return new OkObjectResult(result);
         }
 
         // http://localhost:7071/api/search?term=nev
@@ -48,7 +70,8 @@ namespace ScotlandsMountains.Api.Functions
 
             var term = terms.Single();
 
-            return await _mountainsRepository.Search(term);
+            var result = await _mountainsRepository.Search(term);
+            return new OkObjectResult(result);
         }
 
         // http://localhost:7071/api/mountains/ddbf11aa-5fe1-42e9-8886-0518afc1c293
@@ -58,7 +81,11 @@ namespace ScotlandsMountains.Api.Functions
             string id,
             ILogger logger)
         {
-            return await _mountainsRepository.GetMountain(id);
+            var result = await _mountainsRepository.GetMountain(id);
+
+            if (result == null) return new NotFoundResult();
+
+            return new OkObjectResult(result);
         }
     }
 }
