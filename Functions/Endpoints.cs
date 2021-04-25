@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ScotlandsMountains.Api.Functions
@@ -58,23 +60,8 @@ namespace ScotlandsMountains.Api.Functions
             return new OkObjectResult(result);
         }
 
-        // http://localhost:7071/api/search?term=nev
-        [FunctionName("Search")]
-        public async Task<IActionResult> Search(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "search")] HttpRequest request,
-            ILogger logger)
-        {
-            if (!request.Query.TryGetValue("term", out var terms)) return new BadRequestResult();
-
-            if (terms.Count != 1) return new BadRequestResult();
-
-            var term = terms.Single();
-
-            var result = await _mountainsRepository.Search(term);
-            return new OkObjectResult(result);
-        }
-
         // http://localhost:7071/api/mountains/ddbf11aa-5fe1-42e9-8886-0518afc1c293
+
         [FunctionName("GetMountain")]
         public async Task<IActionResult> GetMountain(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "mountains/{id}")] HttpRequest request,
@@ -85,6 +72,28 @@ namespace ScotlandsMountains.Api.Functions
 
             if (result == null) return new NotFoundResult();
 
+            return new OkObjectResult(result);
+        }
+
+        // http://localhost:7071/api/search?term=nev
+        [FunctionName("Search")]
+        public async Task<IActionResult> Search(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", "POST", Route = "search")] HttpRequest request,
+            ILogger logger)
+        {
+            var term = request.Query.GetString("term");
+            if (string.IsNullOrWhiteSpace(term) || term.Length < 3) return new BadRequestResult();
+
+            var pageSize = request.Query.GetInt("pageSize") ?? 10;
+
+            string continuationToken  = null;
+            if (request.Method == HttpMethods.Post)
+            {
+                var json = await new StreamReader(request.Body).ReadToEndAsync();
+                continuationToken = JsonConvert.DeserializeObject<dynamic>(json).continuationToken;
+            }
+
+            var result = await _mountainsRepository.Search(term, pageSize, continuationToken);
             return new OkObjectResult(result);
         }
     }
