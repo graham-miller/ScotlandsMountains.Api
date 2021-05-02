@@ -28,10 +28,10 @@ namespace ScotlandsMountains.Api.Functions
         {
             var classifications = await _mountainsRepository.GetClassifications();
             var id = classifications.First()["id"].ToString();
-            var mountains = await _mountainsRepository.GetClassification(id);
+            var classification = await _mountainsRepository.GetClassification(id);
             var result = new JObject(
                 new JProperty("classifications", classifications),
-                new JProperty("mountains", mountains));
+                new JProperty("classification", classification));
             
             return new OkObjectResult(result);
         }
