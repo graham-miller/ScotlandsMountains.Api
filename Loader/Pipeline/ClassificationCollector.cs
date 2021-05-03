@@ -24,12 +24,31 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                     _items.Add(key, classification);
                 }
 
-                classification.Mountains.Add(new MountainSummary(context.Mountain));
+                classification.Mountains.Add(new NumberedMountainSummary(context.Mountain));
                 context.Mountain.Classifications.Add(new ClassificationSummary(classification));
             }
         }
 
-        public IList<Classification> Items => _items.Select(x => x.Value).ToList();
+        public IList<Classification> Items => GetFinalizedList();
+
+        private List<Classification> GetFinalizedList()
+        {
+            var classifications = _items.Select(x => x.Value).ToList();
+
+            foreach (var classification in classifications)
+            {
+                classification.Mountains = classification.Mountains
+                    .OrderByDescending(x => x.Height.Metres)
+                    .Select((mountain, index) =>
+                    {
+                        mountain.Position = index + 1;
+                        return mountain;
+                    })
+                    .ToList();
+            }
+
+            return classifications;
+        }
 
         private readonly IDictionary<string, Classification> _items = new Dictionary<string, Classification>();
 
@@ -132,5 +151,6 @@ namespace ScotlandsMountains.Api.Loader.Pipeline
                 Description = "The TuMPs (Thirty and upwards Metre Prominence) are hills in the British Isles that have a prominence of at least 30 metres, regardless of distance, absolute height or merit. There are 7,748 Scottish TuMPS."
             }}
         };
+
     }
 }

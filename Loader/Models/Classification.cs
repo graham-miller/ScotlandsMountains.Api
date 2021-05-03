@@ -12,7 +12,7 @@ namespace ScotlandsMountains.Api.Loader.Models
 
         public string Description { get; set; }
 
-        public IList<MountainSummary> Mountains { get; set; } = new List<MountainSummary>();
+        public IList<NumberedMountainSummary> Mountains { get; set; } = new List<NumberedMountainSummary>();
     }
 
     public class ClassificationSummary : Summary
@@ -24,5 +24,14 @@ namespace ScotlandsMountains.Api.Loader.Models
         }
 
         public string Name { get; set; }
+    }
+
+    public class NumberedMountainSummary : MountainSummary
+    {
+        public NumberedMountainSummary(Mountain mountain)
+            : base(mountain)
+        { }
+
+        public int Position { get; set; }
     }
 }
