@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.Azure.Cosmos;
 using ScotlandsMountains.Api.Loader.Models;
 
@@ -40,6 +42,7 @@ namespace ScotlandsMountains.Api.Loader.CosmosDb
 
         public async Task Save<T>(IEnumerable<T> items) where T : Entity
         {
+            var count = items.Count();
             var cost = 0d;
             var inserted = 0;
             var errors = 0;
@@ -54,7 +57,7 @@ namespace ScotlandsMountains.Api.Loader.CosmosDb
                 while (result.StatusCode == HttpStatusCode.TooManyRequests && attempts < 5)
                 {
                     attempts++;
-                    await Task.Delay(500);
+                    await Task.Delay(100);
                     result = await Insert(item);
                 }
                 
@@ -66,6 +69,11 @@ namespace ScotlandsMountains.Api.Loader.CosmosDb
                 else
                 {
                     errors++;
+                }
+
+                if ((inserted + errors) % 100 == 0)
+                {
+                    Console.WriteLine($"Inserted {inserted:#,##0} of {count:#,##0} {typeof(T).Name.ToLower().Pluralize()} ({errors:#,##0} errors)");
                 }
             }
 
