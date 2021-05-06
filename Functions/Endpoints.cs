@@ -46,7 +46,7 @@ namespace ScotlandsMountains.Api.Functions
             return new OkObjectResult(result);
         }
 
-        // http://localhost:7071/api/classifications/6a69287b-471a-4e72-92b3-55bfb599c3db
+        // http://localhost:7071/api/classifications/{id}
         [FunctionName("GetClassification")]
         public async Task<IActionResult> GetClassification(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "classifications/{id}")] HttpRequest request,
@@ -60,7 +60,7 @@ namespace ScotlandsMountains.Api.Functions
             return new OkObjectResult(result);
         }
 
-        // http://localhost:7071/api/mountains/ddbf11aa-5fe1-42e9-8886-0518afc1c293
+        // http://localhost:7071/api/mountains/{id}
 
         [FunctionName("GetMountain")]
         public async Task<IActionResult> GetMountain(
@@ -75,7 +75,7 @@ namespace ScotlandsMountains.Api.Functions
             return new OkObjectResult(result);
         }
 
-        // http://localhost:7071/api/search?term=nev
+        // http://localhost:7071/api/search?term={term}
         [FunctionName("Search")]
         public async Task<IActionResult> Search(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", "POST", Route = "search")] HttpRequest request,
