@@ -84,7 +84,7 @@ namespace ScotlandsMountains.Api.Functions
             var term = request.Query.GetString("term");
             if (string.IsNullOrWhiteSpace(term) || term.Length < 3) return new BadRequestResult();
 
-            var pageSize = request.Query.GetInt("pageSize") ?? 10;
+            var pageSize = request.Query.GetInt("pageSize") ?? 50;
 
             string continuationToken  = null;
             if (request.Method == HttpMethods.Post)

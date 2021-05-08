@@ -96,7 +96,7 @@ namespace ScotlandsMountains.Api.Functions
                 WHERE CONTAINS(c.name, '{term}', true)
                 ORDER BY c.height.metres DESC";
 
-            return await SearchMountainAspectsContainer(query, pageSize, continuationToken);
+            return await SearchMountainAspectsContainer(query, term, pageSize, continuationToken);
         }
 
         private async Task<JArray> QueryMountainAspectsContainer(string query)
@@ -136,7 +136,7 @@ namespace ScotlandsMountains.Api.Functions
             }
         }
 
-        private async Task<JObject> SearchMountainAspectsContainer(string query, int pageSize, string continuationToken)
+        private async Task<JObject> SearchMountainAspectsContainer(string query, string term, int pageSize, string continuationToken)
         {
             var container = _client.GetDatabase(DatabaseId).GetContainer(MountainsContainerId);
             var options = new QueryRequestOptions {MaxItemCount = pageSize};
@@ -155,6 +155,7 @@ namespace ScotlandsMountains.Api.Functions
                     var results = JsonConvert.DeserializeObject<JObject>(json).GetValue("Documents");
 
                     return new JObject(
+                        new JProperty("term", term),
                         new JProperty("continuationToken", nextContinuationToken),
                         new JProperty("results", results)
                     );

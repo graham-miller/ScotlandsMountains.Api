@@ -21,9 +21,12 @@ namespace ScotlandsMountains.Api.Loader.Models
             : base(classification)
         {
             Name = classification.Name;
+            DisplayOrder = classification.DisplayOrder;
         }
 
         public string Name { get; set; }
+
+        public int DisplayOrder { get; set; }
     }
 
     public class NumberedMountainSummary : MountainSummary
