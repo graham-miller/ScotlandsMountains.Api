@@ -86,14 +86,13 @@ namespace ScotlandsMountains.Api.Functions
         {
             var query = $@"
                 SELECT
-                    '{term}' AS term,
                     c.name,
                     c.location,
                     c.height,
                     c.id,
                     c.partitionKey
                 FROM c
-                WHERE CONTAINS(c.name, '{term}', true)
+                WHERE CONTAINS(c.name, {"\""}{term.Replace("\"", "\\\"")}{"\""}, true)
                 ORDER BY c.height.metres DESC";
 
             return await SearchMountainAspectsContainer(query, term, pageSize, continuationToken);

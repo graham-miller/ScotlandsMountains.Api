@@ -82,9 +82,9 @@ namespace ScotlandsMountains.Api.Functions
             ILogger logger)
         {
             var term = request.Query.GetString("term");
-            if (string.IsNullOrWhiteSpace(term) || term.Length < 3) return new BadRequestResult();
+            if (string.IsNullOrWhiteSpace(term)) return new BadRequestResult();
 
-            var pageSize = request.Query.GetInt("pageSize") ?? 50;
+            var pageSize = request.Query.GetInt("pageSize") ?? 10;
 
             string continuationToken  = null;
             if (request.Method == HttpMethods.Post)
